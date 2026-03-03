@@ -1,11 +1,12 @@
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from typing import Optional, List
 import logging
 import sys
+import os
 from pathlib import Path
 
 # Add parent directory to path
@@ -19,9 +20,27 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Advanced Coding Expert API",
-    description="Llama 3.1 + RAG + Agentic Workflows",
+    description="TechPartner AI Coder - Llama 3.1 + RAG + Agentic Workflows",
     version="1.0.0"
 )
+
+# Security: Admin secret from environment
+ADMIN_SECRET = os.getenv("ADMIN_SECRET", "Admin@6565")
+
+
+# ==================== Security Dependency ====================
+
+def verify_admin(authorization: str = Header(None), x_admin_token: str = Header(None)):
+    """Verify admin access using Bearer token or custom header"""
+    token = None
+    if authorization and authorization.startswith("Bearer "):
+        token = authorization.split(" ")[1]
+    elif x_admin_token:
+        token = x_admin_token
+        
+    if token != ADMIN_SECRET:
+        raise HTTPException(status_code=401, detail="Unauthorized TechPartner Access")
+    return True
 
 
 # ==================== Data Models ====================
@@ -81,7 +100,7 @@ async def health_check():
 
 
 @app.post("/query")
-async def query_codebase(request: QueryRequest) -> dict:
+async def query_codebase(request: QueryRequest, admin: bool = Depends(verify_admin)) -> dict:
     """
     Query your codebase with RAG-powered Llama.
     
@@ -113,7 +132,7 @@ async def query_codebase(request: QueryRequest) -> dict:
 
 
 @app.post("/task")
-async def complete_task(request: TaskRequest) -> dict:
+async def complete_task(request: TaskRequest, admin: bool = Depends(verify_admin)) -> dict:
     """
     Complete a coding task using agentic workflows.
     
@@ -148,7 +167,7 @@ async def complete_task(request: TaskRequest) -> dict:
 
 
 @app.post("/index")
-async def index_codebase(request: IndexRequest) -> dict:
+async def index_codebase(request: IndexRequest, admin: bool = Depends(verify_admin)) -> dict:
     """
     Index a directory for RAG semantic search.
     
@@ -231,6 +250,11 @@ async def list_tools() -> dict:
                 "name": "navigator",
                 "description": "Navigate and read files",
                 "methods": ["read_file", "list_directory", "analyze_structure"]
+            },
+            {
+                "name": "techpartner",
+                "description": "Query TechPartner CRM and system (requires admin)",
+                "methods": ["get_health", "get_crm_stats", "get_leads", "get_companies"]
             }
         ]
     }

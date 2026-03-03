@@ -290,7 +290,8 @@ class CodeAgent:
             "linter": LinterTool(),
             "search": SearchTool(),
             "executor": CodeExecutor(),
-            "navigator": FileNavigator()
+            "navigator": FileNavigator(),
+            "techpartner": TechPartnerAPITool()
         }
         
         self.tool_descriptions = self._build_tool_descriptions()
@@ -318,12 +319,19 @@ You have access to the following tools:
    - list_directory(dir_path): List directory
    - analyze_structure(): Show project structure
 
+5. techpartner: Query TechPartner CRM and system
+   - get_health(): Get system health status
+   - get_crm_stats(): Get CRM statistics
+   - get_leads(status): Get leads (optional status filter)
+   - get_companies(): Get all companies from CRM
+
 When you need help with a coding task:
 1. Use search to understand the codebase
 2. Use navigator to read relevant files
-3. Use linter to validate code
-4. Use executor to test solutions
-5. Propose improved code with explanations
+3. Use techpartner to check CRM data
+4. Use linter to validate code
+5. Use executor to test solutions
+6. Propose improved code with explanations
 """
         return descriptions
 
@@ -366,22 +374,106 @@ Include code examples, explanations, and best practices.
         return solution
 
     def _query_llm(self, prompt: str) -> str:
-        """Query the LLM"""
+        """Query the LLM - supports external APIs (Blackbox AI/Groq) or local Ollama"""
         try:
-            response = requests.post(
-                f"{self.ollama_url}/api/generate",
-                json={
-                    "model": self.model,
-                    "prompt": prompt,
-                    "temperature": 0.7,
-                    "stream": False
-                },
-                timeout=60
-            )
-            return response.json().get('response', '')
+            # Try External API First (Blackbox AI / OpenRouter / Groq)
+            api_key = os.getenv("BLACKBOX_API_KEY")
+            
+            if api_key:
+                headers = {
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json"
+                }
+                payload = {
+                    "model": "blackboxai",  # Or 'llama-3.1-70b' if using Groq
+                    "messages": [
+                        {"role": "system", "content": "You are TechPartner's Elite Coding Architect. Provide expert solutions with code examples."},
+                        {"role": "user", "content": prompt}
+                    ]
+                }
+                
+                # Use Blackbox or Groq endpoint
+                response = requests.post(
+                    "https://api.blackbox.ai/v1/chat/completions",
+                    json=payload,
+                    headers=headers,
+                    timeout=120
+                )
+                result = response.json()
+                if 'choices' in result:
+                    return result['choices'][0]['message']['content']
+                return str(result)
+            else:
+                # FALLBACK: Local Ollama
+                response = requests.post(
+                    f"{self.ollama_url}/api/generate",
+                    json={
+                        "model": self.model,
+                        "prompt": prompt,
+                        "temperature": 0.7,
+                        "stream": False
+                    },
+                    timeout=60
+                )
+                return response.json().get('response', '')
+
         except Exception as e:
             logger.error(f"LLM error: {e}")
             return f"Error: {e}"
+
+
+import os
+import requests
+
+
+class TechPartnerAPITool:
+    """Tool for the Coding Expert to interact with the main TechPartner Node.js CRM and OS."""
+    
+    def __init__(self):
+        self.name = "techpartner_api"
+        self.description = "Use this to query the main TechPartner database, CRM leads, or system health. Available endpoints: '/api/system/health', '/api/crm/stats', '/api/crm/leads', '/api/leads', '/api/crm/companies'."
+        self.base_url = "http://localhost:8080"
+        # Uses the same admin secret from your Node.js .env
+        self.admin_secret = os.getenv("ADMIN_SECRET", "Admin@6565")
+
+    def execute(self, endpoint: str, method: str = "GET", payload: dict = None) -> str:
+        headers = {
+            "Authorization": f"Bearer {self.admin_secret}",
+            "Content-Type": "application/json"
+        }
+        url = f"{self.base_url}{endpoint}"
+        
+        try:
+            if method.upper() == "GET":
+                res = requests.get(url, headers=headers, timeout=10)
+            elif method.upper() == "POST":
+                res = requests.post(url, headers=headers, json=payload, timeout=10)
+            else:
+                return f"Unsupported method {method}"
+                
+            if res.status_code == 200:
+                return f"API Success: {res.text}"
+            else:
+                return f"API Error {res.status_code}: {res.text}"
+        except Exception as e:
+            return f"TechPartner API Connection Failed: {str(e)}"
+    
+    def get_health(self) -> str:
+        """Get TechPartner system health status"""
+        return self.execute("/api/system/health")
+    
+    def get_crm_stats(self) -> str:
+        """Get CRM statistics"""
+        return self.execute("/api/crm/stats")
+    
+    def get_leads(self, status: str = None) -> str:
+        """Get leads, optionally filtered by status"""
+        endpoint = "/api/crm/leads" if not status else f"/api/crm/leads?status={status}"
+        return self.execute(endpoint)
+    
+    def get_companies(self) -> str:
+        """Get all companies from CRM"""
+        return self.execute("/api/crm/companies")
 
 
 # Example usage
