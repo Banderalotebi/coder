@@ -1,0 +1,12 @@
+name: "My Project Config"
+version: "1.0.0"
+schema: v1
+
+mcpServers:
+  - name: "Local Tools"
+    command: "npx"
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-filesystem"
+      - "/Users/bander/coder/advanced-coding-expert/" # Replace with your actual project path
+    env: {}

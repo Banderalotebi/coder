@@ -1,0 +1,1 @@
+function serveFrontend() { buildApplication(); serveLiveServer(); }

@@ -1,0 +1,40 @@
+# Core Dependencies
+# Requires: Python 3.10+
+torch>=2.0.0
+transformers>=4.36.0
+peft>=0.7.0
+
+# Phase 1: Continue.dev Integration
+# (VS Code extension - installed separately)
+
+# Phase 2: RAG Pipeline
+langchain>=0.1.0
+langchain-community>=0.0.10
+chromadb>=0.4.0
+sentence-transformers>=2.2.0
+ollama>=0.1.0
+python-dotenv>=1.0.0
+pypdf>=3.17.0
+tiktoken>=0.5.0
+
+# Phase 3: Fine-tuning with Unsloth
+# Note: Install separately after core deps work
+# pip install unsloth xformers bitsandbytes trl datasets
+# For now, install core first:
+trl>=0.7.6
+datasets>=2.14.0
+
+# Phase 4: Agentic Workflows & Tools
+pydantic>=2.0.0
+fastapi>=0.104.0
+uvicorn>=0.24.0
+pydantic-settings>=2.0.0
+tenacity>=8.2.0
+
+# Development & Utils
+jupyter>=1.0.0
+ipykernel>=6.26.0
+black>=23.10.0
+flake8>=6.1.0
+pytest>=7.4.0
+httpx>=0.25.0

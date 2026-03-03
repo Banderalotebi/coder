@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced Coding Expert</title>
+  <style>
+    body {font-family: Arial, sans-serif; background-color: #f0f0f0; margin:0; padding:20px;}
+    .container {max-width: 800px; margin:auto; background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,.1);}
+    canvas {display:block; margin:auto;}
+  </style>
+  <!-- Include Chart.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Model Performance</h1>
+    <canvas id="performanceChart" width="400" height="200"></canvas>
+  </div>
+  <script>
+    // Default placeholder data
+    const labels = ['Jan', 'Feb', 'Mar'];
+    const data = {
+      labels: labels,
+      datasets: [{
+        label: 'Accuracy (%)',
+        data: [90, 92, 95],
+        borderColor: 'rgb(75, 192, 192)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        fill: true,
+      }]
+    };
+    const config = {
+      type: 'line',
+      data: data,
+      options: {responsive: true, maintainAspectRatio: false}
+    };
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    const chart = new Chart(ctx, config);
+
+    // Fetch real data from API if available
+    fetch('/api/model/performance')
+      .then(r => r.ok ? r.json() : null)
+      .then(resp => {
+        if (resp && resp.accuracy) {
+          chart.data.datasets[0].data = resp.accuracy;
+          chart.update();
+        }
+      })
+      .catch(err => console.error('Failed to load performance data', err));
+  </script>
+</body>
+</html>

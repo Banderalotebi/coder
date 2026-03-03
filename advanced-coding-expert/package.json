@@ -1,0 +1,21 @@
+{
+  "name": "advanced-
+  coding-expert",
+  "
+  version": "1.0.0",
+  "description": "Transform Llama 3.1 into an elite coding expert using Fine-Tuning, RAG, and Agentic Workflows.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "npm": "^11.10.1",
+    "start": "^5.1.0"
+  }
+}

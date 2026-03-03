@@ -1,0 +1,30 @@
+# Minimal working setup for Phase 1-4 (no fine-tuning)
+# Install with: pip install -r requirements-core.txt
+
+torch>=2.0.0
+transformers>=4.36.0
+peft>=0.7.0
+
+# RAG Pipeline
+langchain>=0.1.0
+langchain-community>=0.0.10
+chromadb>=0.4.0
+sentence-transformers>=2.2.0
+ollama>=0.1.0
+python-dotenv>=1.0.0
+tiktoken>=0.5.0
+
+# Agentic & API
+pydantic>=2.0.0
+fastapi>=0.104.0
+uvicorn>=0.24.0
+httpx>=0.25.0
+tenacity>=8.2.0
+
+# Development
+jupyter>=1.0.0
+ipykernel>=6.26.0
+black>=23.10.0
+flake8>=6.1.0
+pytest>=7.4.0
+pyyaml>=6.0

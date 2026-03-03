@@ -1,0 +1,32 @@
+name: "Local Dev Agent"
+version: "1.0.0"
+
+default:
+  model: "llama3.1-coder:latest"
+  provider: "ollama"
+
+models:
+  - id: "llama3.1-coder:latest"
+    model: "llama3.1-coder:latest"
+    title: "Llama 3.1 Coder"
+    provider: "ollama"
+    baseUrl: "http://localhost:11434"
+
+  - id: "llama3.1:latest"
+    model: "llama3.1:latest"
+    title: "Llama 3.1"
+    provider: "ollama"
+    baseUrl: "http://localhost:11434"
+
+# 1. This enables Inline Ghost-Text as you type
+tabAutocompleteModel:
+  title: "Llama 3.1 Autocomplete"
+  provider: "ollama"
+  model: "llama3.1-coder:latest"
+  baseUrl: "http://localhost:11434"
+
+# 2. This forces Nomic for @codebase (Overrides Transformers.js)
+embeddingsProvider:
+  provider: "ollama"
+  model: "nomic-embed-text:latest"
+  baseUrl: "http://localhost:11434"

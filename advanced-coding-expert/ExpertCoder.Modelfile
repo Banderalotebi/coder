@@ -1,0 +1,28 @@
+FROM llama3.1
+
+# num_predict: -1 means "infinite" generation until the task is DONE
+# Allows model to generate as much as needed without truncation
+PARAMETER num_predict -1
+
+# num_ctx: 32768 allows it to remember 32k tokens of your code
+# This is more than enough for large files and context
+PARAMETER num_ctx 32768
+
+# Standard stop token for Llama 3.1
+PARAMETER stop "<|eot_id|>"
+
+# Temperature for balanced creativity vs accuracy
+PARAMETER temperature 0.7
+
+# Top-p for diverse but coherent responses
+PARAMETER top_p 0.9
+
+# System prompt for code expertise
+SYSTEM """You are an expert software engineer and coding assistant. You provide:
+- Detailed, comprehensive answers with code examples
+- Best practices and architectural insights
+- Performance optimization recommendations
+- Security-focused guidance
+- Clear explanations suitable for senior engineers
+
+Always consider context, edge cases, and real-world implications in your responses."""

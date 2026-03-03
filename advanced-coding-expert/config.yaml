@@ -1,0 +1,61 @@
+# Advanced Coding Expert - Central Configuration
+
+# Model Configuration
+model:
+  name: "llama2"
+  variant: "llama2:7b"  # or llama2:13b, llama2:70b
+  context_length: 4096
+  temperature: 0.7
+  top_p: 0.9
+
+# Ollama Local Settings
+ollama:
+  base_url: "http://localhost:11434"
+  embedding_model: "nomic-embed-text"  # Fast, local embeddings
+  code_model: "llama2:7b"
+
+# RAG Pipeline Settings
+rag:
+  chunk_size: 500  # Characters per semantic chunk
+  chunk_overlap: 50
+  vector_db: "chromadb"
+  chromadb_path: "./data/chromadb"
+  embedding_dimension: 768  # For nomic-embed-text
+
+# Fine-tuning Settings
+finetuning:
+  method: "lora"  # Low-Rank Adaptation
+  lora_r: 8
+  lora_alpha: 16
+  lora_dropout: 0.05
+  output_dir: "./models/llama2-expert"
+  num_epochs: 3
+  batch_size: 4
+  learning_rate: 2e-4
+  max_seq_length: 2048
+  # Dataset
+  dataset_name: "magicoder"  # or "stackoverflow-cleaned"
+  train_split: "train"
+
+# Agentic Workflows
+agentic:
+  tools_enabled:
+    - linter
+    - code_search
+    - code_executor
+    - file_navigator
+  sandbox_timeout: 10  # seconds
+  max_tool_calls: 5
+
+# Development
+development:
+  debug: false
+  log_level: "INFO"
+  cache_embeddings: true
+
+# Paths
+paths:
+  data: "./data"
+  models: "./models"
+  logs: "./logs"
+  cache: "./.cache"

@@ -1,0 +1,61 @@
+{
+  "models": [
+    {
+      "title": "Llama 3.1 Expert",
+      "provider": "ollama",
+      "model": "expert-llama",
+      "apiBase": "http://localhost:11434",
+      "requestOptions": {
+        "timeout": 600000,
+        "numPredict": -1,
+        "numContext": 32768
+      }
+    }
+  ],
+  "contextProviders": [
+    {
+      "name": "codebase",
+      "params": {
+        "nFinal": 15,
+        "nRetrieve": 30
+      }
+    },
+    {
+      "name": "file"
+    },
+    {
+      "name": "search"
+    },
+    {
+      "name": "docs"
+    }
+  ],
+  "slashCommands": [
+    {
+      "name": "explain",
+      "description": "Explain the selected code with detailed breakdown"
+    },
+    {
+      "name": "refactor",
+      "description": "Refactor code for better readability and performance"
+    },
+    {
+      "name": "test",
+      "description": "Generate comprehensive unit tests"
+    },
+    {
+      "name": "debug",
+      "description": "Debug and find issues in code"
+    },
+    {
+      "name": "optimize",
+      "description": "Optimize code for performance"
+    },
+    {
+      "name": "document",
+      "description": "Generate documentation and docstrings"
+    }
+  ],
+  "disableIndexing": false,
+  "useLocalDocsSources": true
+}

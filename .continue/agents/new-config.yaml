@@ -1,0 +1,51 @@
+name: "Local Dev Config"
+version: "1.0.0"
+schema: "v1"
+
+models:
+  - name: "Llama 3.1 Coder"
+    provider: "ollama"
+    model: "llama3.1-coder:latest"
+    apiBase: "http://localhost:11434"
+    roles:
+      - chat
+      - edit
+      - apply
+      - autocomplete
+
+  - name: "Llama 3.1"
+    provider: "ollama"
+    model: "llama3.1:8b"
+    apiBase: "http://localhost:11434"
+    roles:
+      - chat
+      - edit
+      - apply
+      - autocomplete
+
+  - name: "Llama 3.1 Expert"
+    provider: "ollama"
+    model: "expert-llama:latest"
+    apiBase: "http://localhost:11434"
+    roles:
+      - chat
+      - edit
+      - apply
+
+  - name: "Nomic Embed Text"
+    provider: "ollama"
+    model: "nomic-embed-text:latest"
+    apiBase: "http://localhost:11434"
+    roles:
+      - embed
+
+  # Cloud fallback for massive tasks
+  - name: "Claude 4.1 Opus"
+    provider: "anthropic"
+    model: "claude-opus-4-1-20250805"
+    apiKey: "YOUR_API_KEY_HERE" # Put a NEW, freshly generated key here!
+    roles:
+      - chat
+      - edit
+      - apply
+      - autocomplete
